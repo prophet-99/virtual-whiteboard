@@ -1,4 +1,5 @@
 import Konva from 'konva';
+
 import * as uuid from 'uuid';
 
 import { Layer } from 'konva/lib/Layer';

@@ -7,9 +7,8 @@ import useImage from 'use-image';
 
 import { ImageShapeModel, ShapePropsModel } from '../models/Shape.model';
 
-const MIMINAL_SIZE = 50;
-
 const ImageWB = ({
+  minimumSize,
   shapeProps,
   isSelected,
   onSelect,
@@ -56,8 +55,8 @@ const ImageWB = ({
             x: node.x(),
             y: node.y(),
             // SET MINIMAL VALUE
-            width: Math.max(MIMINAL_SIZE, node.width() * scaleX),
-            height: Math.max(MIMINAL_SIZE, node.height() * scaleY),
+            width: Math.max(minimumSize, node.width() * scaleX),
+            height: Math.max(minimumSize, node.height() * scaleY),
           });
         }}
       />
@@ -67,7 +66,7 @@ const ImageWB = ({
         <Transformer
           ref={transformRef}
           boundBoxFunc={(oldBox, newBox) =>
-            newBox.width < MIMINAL_SIZE || newBox.height < MIMINAL_SIZE
+            newBox.width < minimumSize || newBox.height < minimumSize
               ? oldBox
               : newBox
           }

@@ -6,9 +6,8 @@ import { Text, Transformer } from 'react-konva';
 
 import { ShapePropsModel } from '../models/Shape.model';
 
-const MIMINAL_SIZE = 50;
-
 const TextWB = ({
+  minimumSize,
   shapeProps,
   isSelected,
   onSelect,
@@ -146,7 +145,7 @@ const TextWB = ({
             x: node.x(),
             y: node.y(),
             // SET MINIMAL VALUE
-            width: Math.max(MIMINAL_SIZE, node.width() * scaleX),
+            width: Math.max(minimumSize, node.width() * scaleX),
           });
         }}
       />
@@ -157,7 +156,7 @@ const TextWB = ({
           ref={transformRef}
           enabledAnchors={['middle-left', 'middle-right']}
           boundBoxFunc={(oldBox, newBox) =>
-            newBox.width < MIMINAL_SIZE ? oldBox : newBox
+            newBox.width < minimumSize ? oldBox : newBox
           }
         />
       )}

@@ -30,6 +30,7 @@ export interface TextShapeModel {
 }
 
 export interface ShapePropsModel {
+  minimumSize: number;
   shapeProps:
     | GeneralShapeModel
     | ImageShapeModel

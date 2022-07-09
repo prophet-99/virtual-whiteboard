@@ -6,9 +6,8 @@ import { Line, Transformer } from 'react-konva';
 
 import { ShapePropsModel } from '../models/Shape.model';
 
-const MIMINAL_SIZE = 50;
-
 const LineWB = ({
+  minimumSize,
   shapeProps,
   isSelected,
   onSelect,
@@ -42,8 +41,7 @@ const LineWB = ({
         }}
         onTransformEnd={() => {
           const node = shapeRef.current;
-
-          const height = Math.max(MIMINAL_SIZE, node.height() + node.scaleY());
+          const height = Math.max(minimumSize, node.height() + node.scaleY());
           const newPoints = [
             node.points()[0],
             node.points()[1],
@@ -66,7 +64,7 @@ const LineWB = ({
           ref={transformRef}
           enabledAnchors={['top-center', 'bottom-center']}
           boundBoxFunc={(oldBox, newBox) =>
-            newBox.height < MIMINAL_SIZE ? oldBox : newBox
+            newBox.height < minimumSize ? oldBox : newBox
           }
         />
       )}
