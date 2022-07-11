@@ -1,14 +1,24 @@
 import Konva from 'konva';
-import { Layer } from 'konva/lib/Layer';
+import { KonvaEventObject } from 'konva/lib/Node';
 import { Transformer } from 'konva/lib/shapes/Transformer';
+import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
 import * as uuid from 'uuid';
 
 import { BrushModel } from '../models/Brush.model';
 
+/**
+ * Custom hook to free brush in canvas
+ * @param setId Callback to set shape id in main component (Whiteboard)
+ * @param deselectAnyNode: Handles the general deselection of a transformer object either from this hook or other components
+ * @param setSelectShape: React hook to set currently selected id in actual state
+ */
 const useBrushWB = (
-  setIdCallback: (id: string) => void,
+  setId: (id: string) => void,
+  deselectAnyNode: (
+    evt: KonvaEventObject<MouseEvent> | KonvaEventObject<TouchEvent>
+  ) => void,
   setSelectShape: React.Dispatch<React.SetStateAction<string>>
 ) => {
   let stage: Stage;
@@ -41,14 +51,13 @@ const useBrushWB = (
         isPaint = true;
         const position = stage.getPointerPosition();
         const localId = `brush~${uuid.v4()}`;
-        setIdCallback(localId);
+        setId(localId);
 
         lastLine = new Konva.Line({
           id: localId,
-          stroke: mode === 'brush' ? 'purple' : 'white',
-          strokeWidth: mode === 'brush' ? 5 : 20,
-          globalCompositeOperation:
-            mode === 'brush' ? 'source-over' : 'destination-out',
+          stroke: 'purple',
+          strokeWidth: 6,
+          globalCompositeOperation: 'source-over',
           points: [position.x, position.y],
           draggable: true,
         });
@@ -82,20 +91,8 @@ const useBrushWB = (
         lastLine.points(newPoints);
         layer.batchDraw();
       });
-    } else {
-      stage.on('click tap', (evt) => {
-        if (evt.target === stage) {
-          transformerRef.nodes([]);
-          layer.draw();
-        } else {
-          const type = evt.target.id().split('~')[0];
-          if (type !== 'brush') {
-            transformerRef.nodes([]);
-            layer.draw();
-          }
-        }
-      });
     }
+    stage.on('click tap', (evt) => deselectAnyNode(evt));
   };
 
   return { setConfigBrush, paintBrush };

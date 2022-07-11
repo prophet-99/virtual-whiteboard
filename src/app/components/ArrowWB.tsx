@@ -41,7 +41,6 @@ const ArrowWB = ({
         }}
         onTransformEnd={() => {
           const node = shapeRef.current;
-
           const height = Math.max(minimumSize, node.height() + node.scaleY());
           const newPoints = [
             node.points()[0],

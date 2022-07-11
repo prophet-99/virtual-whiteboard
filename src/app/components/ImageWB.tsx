@@ -17,7 +17,10 @@ const ImageWB = ({
   const shapeRef = useRef<ImageType>();
   const transformRef = useRef<TransformerType>();
   // CONTAINS IMAGE STATUS IN SECOND DESTRUCTURED PARAMETER
-  const [image] = useImage((shapeProps as ImageShapeModel).imageURL);
+  const [image] = useImage(
+    (shapeProps as ImageShapeModel).imageURL,
+    'anonymous'
+  );
 
   useEffect(() => {
     if (isSelected) {
