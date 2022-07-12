@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import Konva from 'konva';
 import { Stage as StageType } from 'konva/lib/Stage';
@@ -31,6 +37,20 @@ import {
 } from './models/InitialObjectsMock';
 
 const WhiteBoard = () => {
+  // DISABLE PULLDOWN TO REFRESH IN MOBILE
+  useLayoutEffect(() => {
+    document.querySelector('html').classList.add('disable-pulldown-refresh-wb');
+    document.querySelector('body').classList.add('disable-pulldown-refresh-wb');
+    return () => {
+      document
+        .querySelector('html')
+        .classList.remove('disable-pulldown-refresh-wb');
+      document
+        .querySelector('body')
+        .classList.remove('disable-pulldown-refresh-wb');
+    };
+  }, []);
+  // GENERAL SETTINGS
   const MINIMUM_SIZE = 50;
   const [tool, setTool] = useState<'default' | 'brush'>('default');
   const [, updateState] = useState({});
@@ -116,7 +136,7 @@ const WhiteBoard = () => {
         Default
       </button>
       <button
-        onClick={() => console.log(stageRef.current.toJSON())}
+        onClick={() => console.log(stageRef.current.toJSON(), rectangles)}
         type="button"
       >
         Save
