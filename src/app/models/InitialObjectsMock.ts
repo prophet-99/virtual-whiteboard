@@ -84,3 +84,12 @@ export const initialTexts: TextShapeModel[] = [
     y: 80,
   },
 ];
+
+export const initialBrushes: LineShapeModel[] = [
+  {
+    id: 'brush~1',
+    stroke: 'crimson',
+    strokeWidth: 6,
+    points: [800, 100, 800, 300, 800, 600],
+  },
+];

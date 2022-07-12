@@ -37,6 +37,7 @@ const useRemoveShapes = (
       setLines,
       setRectangles,
       setTexts,
+      setBrushes,
     } = shapeStateList;
 
     const deleteEvtRef = ({ code }: KeyboardEvent) => {
@@ -83,12 +84,14 @@ const useRemoveShapes = (
           forceUpdate();
           return;
         }
-        selectedIdx = brushes.findIndex((id) => id === selectShape);
+        selectedIdx = brushes.findIndex(({ id }) => id === selectShape);
         if (selectedIdx !== -1) {
           transformerRef.nodes([]);
           layerRef
             .findOne((shape: NodeConfig) => shape.getId() === selectShape)
             .destroy();
+          brushes.splice(selectedIdx, 1);
+          setBrushes(brushes);
           forceUpdate();
         }
       }
@@ -106,7 +109,7 @@ type ShapeType = {
   lines: LineShapeModel[];
   rectangles: GeneralShapeModel[];
   texts: TextShapeModel[];
-  brushes: string[];
+  brushes: LineShapeModel[];
 };
 
 type ShapeStateType = {
@@ -116,6 +119,7 @@ type ShapeStateType = {
   setLines: React.Dispatch<React.SetStateAction<LineShapeModel[]>>;
   setRectangles: React.Dispatch<React.SetStateAction<GeneralShapeModel[]>>;
   setTexts: React.Dispatch<React.SetStateAction<TextShapeModel[]>>;
+  setBrushes: React.Dispatch<React.SetStateAction<LineShapeModel[]>>;
 };
 
 export default useRemoveShapes;

@@ -34,6 +34,7 @@ import {
   initialLines,
   initialRectangles,
   initialTexts,
+  initialBrushes,
 } from './models/InitialObjectsMock';
 
 const WhiteBoard = () => {
@@ -62,7 +63,7 @@ const WhiteBoard = () => {
   const [lines, setLines] = useState(initialLines);
   const [arrows, setArrows] = useState(initialArrows);
   const [texts, setTexts] = useState(initialTexts);
-  const brushes = useRef<string[]>([]);
+  const [brushes, setBrushes] = useState(initialBrushes);
   const [selectShape, setSelectShape] = useState<string>(undefined);
   const stageRef = useRef<StageType>();
   const layerRef = useRef<LayerType>();
@@ -78,9 +79,8 @@ const WhiteBoard = () => {
   );
   // BRUSH HOOK, SETUP AND USE
   const { paintBrush, setConfigBrush } = useBrushWB(
-    (returnedId) => {
-      brushes.current = [...brushes.current, returnedId];
-    },
+    brushes,
+    setBrushes,
     ({ target }) => {
       if (target === target.getStage()) {
         transformer.current.nodes([]);
@@ -109,7 +109,7 @@ const WhiteBoard = () => {
       lines,
       rectangles,
       texts,
-      brushes: brushes.current,
+      brushes,
     },
     {
       setArrows,
@@ -118,6 +118,7 @@ const WhiteBoard = () => {
       setLines,
       setRectangles,
       setTexts,
+      setBrushes,
     },
     selectShape,
     forceUpdate,

@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import Konva from 'konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Transformer } from 'konva/lib/shapes/Transformer';
@@ -7,15 +9,18 @@ import { Stage } from 'konva/lib/Stage';
 import * as uuid from 'uuid';
 
 import { BrushModel } from '../models/Brush.model';
+import { LineShapeModel } from '../models/Shape.model';
 
 /**
  * Custom hook to free brush in canvas
- * @param setId Callback to set shape id in main component (Whiteboard)
+ * @param brushes List of shapes to rendered in canvas on first initialization
+ * @param setBrush React hook to set brush in main component (Whiteboard)
  * @param deselectAnyNode: Handles the general deselection of a transformer object either from this hook or other components
  * @param setSelectShape: React hook to set currently selected id in actual state
  */
 const useBrushWB = (
-  setId: (id: string) => void,
+  brushes: LineShapeModel[],
+  setBrush: React.Dispatch<React.SetStateAction<LineShapeModel[]>>,
   deselectAnyNode: (
     evt: KonvaEventObject<MouseEvent> | KonvaEventObject<TouchEvent>
   ) => void,
@@ -26,6 +31,10 @@ const useBrushWB = (
   let transformerRef: Transformer;
   let mode: 'default' | 'brush';
   let minimumSize: number;
+
+  useEffect(() => {
+    console.log('Brushes', brushes);
+  }, []);
 
   const setConfigBrush = (brushConfig: BrushModel) => {
     stage = brushConfig.stage;
@@ -50,11 +59,9 @@ const useBrushWB = (
       stage.on('mousedown touchstart', () => {
         isPaint = true;
         const position = stage.getPointerPosition();
-        const localId = `brush~${uuid.v4()}`;
-        setId(localId);
 
         lastLine = new Konva.Line({
-          id: localId,
+          id: `brush~${uuid.v4()}`,
           stroke: 'purple',
           strokeWidth: 6,
           globalCompositeOperation: 'source-over',
@@ -66,6 +73,16 @@ const useBrushWB = (
 
       stage.on('mouseup touchend', () => {
         isPaint = false;
+        // ADDED TO SHAPE STATE
+        setBrush((prevState) => [
+          ...prevState,
+          {
+            id: lastLine.id(),
+            points: lastLine.points(),
+            stroke: lastLine.stroke(),
+            strokeWidth: lastLine.strokeWidth(),
+          },
+        ]);
         // ADDED TRANSFORM REF TO LAST LINE
         lastLine.on('click tap', ({ target }) => {
           setSelectShape(target.id());
