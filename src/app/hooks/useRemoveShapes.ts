@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { NodeConfig } from 'konva/lib/Node';
 import { Layer as LayerType } from 'konva/lib/Layer';
 import { Transformer as TransformerType } from 'konva/lib/shapes/Transformer';
 import {
-  GeneralShapeModel,
-  ImageShapeModel,
-  LineShapeModel,
-  TextShapeModel,
-} from '../models/Shape.model';
+  ShapeListModel,
+  ShapeStateListModel,
+} from '../models/ShapeState.model';
 
 /**
  * Custom hook to delete shapes
@@ -20,8 +18,8 @@ import {
  * @param layerRef Canvas layer
  */
 const useRemoveShapes = (
-  shapeList: ShapeType,
-  shapeStateList: ShapeStateType,
+  shapeList: ShapeListModel,
+  shapeStateList: ShapeStateListModel,
   selectShape: string,
   forceUpdate: () => void,
   transformerRef: TransformerType,
@@ -100,26 +98,6 @@ const useRemoveShapes = (
     return () => document.removeEventListener('keydown', deleteEvtRef);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectShape]);
-};
-
-type ShapeType = {
-  arrows: LineShapeModel[];
-  circles: GeneralShapeModel[];
-  images: ImageShapeModel[];
-  lines: LineShapeModel[];
-  rectangles: GeneralShapeModel[];
-  texts: TextShapeModel[];
-  brushes: LineShapeModel[];
-};
-
-type ShapeStateType = {
-  setArrows: React.Dispatch<React.SetStateAction<LineShapeModel[]>>;
-  setCircles: React.Dispatch<React.SetStateAction<GeneralShapeModel[]>>;
-  setImages: React.Dispatch<React.SetStateAction<ImageShapeModel[]>>;
-  setLines: React.Dispatch<React.SetStateAction<LineShapeModel[]>>;
-  setRectangles: React.Dispatch<React.SetStateAction<GeneralShapeModel[]>>;
-  setTexts: React.Dispatch<React.SetStateAction<TextShapeModel[]>>;
-  setBrushes: React.Dispatch<React.SetStateAction<LineShapeModel[]>>;
 };
 
 export default useRemoveShapes;

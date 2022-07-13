@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Konva from 'konva';
 import { Stage as StageType } from 'konva/lib/Stage';
@@ -27,32 +21,22 @@ import TextWB from './components/TextWB';
 import useBrushWB from './hooks/useBrushWB';
 import useRemoveShapes from './hooks/useRemoveShapes';
 import useZIndexShape from './hooks/useZIndexShape';
-import {
-  getSpecificStoredDataUtil,
-  saveStoredDataUtil,
-} from './utils/storedData.util';
+import WhiteBoardControls from './WhiteBoardControls';
+import useShape from './hooks/useShape';
+import usePulldownRefresh from './hooks/usePulldownRefresh';
+import { getSpecificStoredDataUtil } from './utils/storedData.util';
 import { ShapeEnum } from './models/enums/Shape.enum';
+import { ToolType } from './models/types/Tool.type';
 
 const WhiteBoard = () => {
   // DISABLE PULLDOWN TO REFRESH IN MOBILE
-  useLayoutEffect(() => {
-    document.querySelector('html').classList.add('disable-pulldown-refresh-wb');
-    document.querySelector('body').classList.add('disable-pulldown-refresh-wb');
-    return () => {
-      document
-        .querySelector('html')
-        .classList.remove('disable-pulldown-refresh-wb');
-      document
-        .querySelector('body')
-        .classList.remove('disable-pulldown-refresh-wb');
-    };
-  }, []);
+  usePulldownRefresh();
   // GENERAL SETTINGS
   const MINIMUM_SIZE = 50;
-  const [tool, setTool] = useState<'default' | 'brush'>('default');
+  const [tool, setTool] = useState<ToolType>('DEFAULT');
   const [, updateState] = useState({});
   const forceUpdate = useCallback(() => updateState({}), []);
-  // SHAPES
+  // SHAPE STATES
   const [arrows, setArrows] = useState(
     (getSpecificStoredDataUtil(ShapeEnum.ARROWS) as LineShapeModel[]) ?? []
   );
@@ -78,6 +62,32 @@ const WhiteBoard = () => {
   const [selectShape, setSelectShape] = useState<string>(undefined);
   const stageRef = useRef<StageType>();
   const layerRef = useRef<LayerType>();
+  // CUSTOM HOOK TO IMPROVE THE USE OF ALL SHAPES
+  const {
+    getAllShapeStates,
+    getAllShapes,
+    getSpecificShape,
+    getSpecificShapeState,
+  } = useShape(
+    {
+      arrows,
+      circles,
+      images,
+      lines,
+      rectangles,
+      texts,
+      brushes,
+    },
+    {
+      setArrows,
+      setCircles,
+      setImages,
+      setLines,
+      setRectangles,
+      setTexts,
+      setBrushes,
+    }
+  );
   // INMUTABLE TRANSFORMER FOR BRUSH HOOK
   const transformer = useRef<TransformerType>(
     new Konva.Transformer({
@@ -113,24 +123,8 @@ const WhiteBoard = () => {
   }, [paintBrush, setConfigBrush, tool]);
   // CUSTOM HOOK TO REMOVE THE SHAPES
   useRemoveShapes(
-    {
-      arrows,
-      circles,
-      images,
-      lines,
-      rectangles,
-      texts,
-      brushes,
-    },
-    {
-      setArrows,
-      setCircles,
-      setImages,
-      setLines,
-      setRectangles,
-      setTexts,
-      setBrushes,
-    },
+    getAllShapes(),
+    getAllShapeStates(),
     selectShape,
     forceUpdate,
     transformer.current,
@@ -141,42 +135,17 @@ const WhiteBoard = () => {
 
   return (
     <>
-      <button onClick={() => setTool('brush')} type="button">
-        Brush me
-      </button>
-      <button onClick={() => setTool('default')} type="button">
-        Default
-      </button>
-      <button
-        onClick={() => {
-          saveStoredDataUtil({
-            arrows,
-            circles,
-            images,
-            lines,
-            rectangles,
-            texts,
-            brushes,
-          });
-        }}
-        type="button"
-      >
-        Save
-      </button>
-      <button
-        onClick={() => {
-          const link = document.createElement('a');
-          link.download = 'whiteboard.png';
-          // CONFIGURE WITH PIXEL RATIO 1.5 FOR HD IMAGES
-          link.href = stageRef.current.toDataURL({ pixelRatio: 1.5 });
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }}
-        type="button"
-      >
-        Save to Image
-      </button>
+      {/* INIT CONTROLS SECTION */}
+      <WhiteBoardControls
+        shapeList={getAllShapes()}
+        shapeStateList={getAllShapeStates()}
+        getSpecificShape={getSpecificShape}
+        getSpecificShapeState={getSpecificShapeState}
+        setTool={setTool}
+        stageRef={stageRef.current}
+      />
+      {/* END CONTROLS SECTION */}
+      {/* INIT CANVAS SECTION */}
       <Stage
         ref={stageRef}
         width={window.innerWidth}
@@ -290,6 +259,7 @@ const WhiteBoard = () => {
           ))}
         </Layer>
       </Stage>
+      {/* END CANVAS SECTION */}
     </>
   );
 };

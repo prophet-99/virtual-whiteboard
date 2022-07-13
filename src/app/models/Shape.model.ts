@@ -24,6 +24,15 @@ export interface LineShapeModel {
   stroke: string;
   strokeWidth: number;
   points: number[];
+  rotation?: number;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  skewY?: number;
+  skewX?: number;
+  scaleX?: number;
+  scaleY?: number;
 }
 
 export interface TextShapeModel {
@@ -52,14 +61,4 @@ export interface ShapePropsModel {
       | TextShapeModel
   ) => void;
   stage?: Stage;
-}
-
-export interface GroupShapeModel {
-  arrows: LineShapeModel[];
-  circles: GeneralShapeModel[];
-  images: ImageShapeModel[];
-  lines: LineShapeModel[];
-  rectangles: GeneralShapeModel[];
-  texts: TextShapeModel[];
-  brushes: LineShapeModel[];
 }

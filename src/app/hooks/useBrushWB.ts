@@ -11,6 +11,7 @@ import * as uuid from 'uuid';
 
 import { BrushModel } from '../models/Brush.model';
 import { LineShapeModel } from '../models/Shape.model';
+import { ToolType } from '../models/types/Tool.type';
 
 /**
  * Custom hook to free brush in canvas
@@ -30,7 +31,7 @@ const useBrushWB = (
   let stage: Stage;
   let layer: Layer;
   let transformerRef: Transformer;
-  let mode: 'default' | 'brush';
+  let mode: ToolType;
   let minimumSize: number;
   const isFirstInitialization = useRef(true);
   /**
@@ -45,10 +46,27 @@ const useBrushWB = (
       transformerRef.nodes([target]);
       layer.draw();
     });
-    brush.on('transformend', () => {
+    brush.on('transformend dragend', () => {
+      const newWidth = Math.max(minimumSize, brush.width() * brush.scaleX());
+      const newHeight = Math.max(minimumSize, brush.height() * brush.scaleY());
       brush.setAttrs({
-        width: Math.max(minimumSize, brush.width() * brush.scaleX()),
-        height: Math.max(minimumSize, brush.height() * brush.scaleY()),
+        width: newWidth,
+        height: newHeight,
+      });
+      // TODO: CHECK THIS
+      // ADDED TO SHAPE STATE
+      setBrush((prevState) => {
+        const idx = prevState.findIndex(({ id }) => id === brush.id());
+        const newState = [...prevState];
+        newState[idx].rotation = brush.rotation();
+        newState[idx].height = brush.height();
+        newState[idx].scaleX = brush.scaleX();
+        newState[idx].scaleY = brush.scaleY();
+        newState[idx].width = brush.width();
+        newState[idx].x = brush.x();
+        newState[idx].y = brush.y();
+
+        return newState;
       });
     });
   };
@@ -69,6 +87,14 @@ const useBrushWB = (
           globalCompositeOperation: 'source-over',
           points: brush.points,
           draggable: true,
+          // TODO: CHECK THIS
+          rotation: brush.rotation,
+          height: brush.height,
+          scaleX: brush.scaleX,
+          scaleY: brush.scaleY,
+          width: brush.width,
+          x: brush.x,
+          y: brush.y,
         });
         layer.add(lineRef);
         handleAddEventsToBrush(lineRef);
@@ -85,7 +111,7 @@ const useBrushWB = (
     stage.off('click tap');
 
     // ACTIVE EVENTS ONLY IF mode IS DIFFERENT FROM default
-    if (mode !== 'default') {
+    if (mode !== 'DEFAULT') {
       let isPaint = false;
       let lastLine: Konva.Line;
 
