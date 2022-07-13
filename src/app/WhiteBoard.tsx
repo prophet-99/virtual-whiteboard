@@ -28,14 +28,10 @@ import useBrushWB from './hooks/useBrushWB';
 import useRemoveShapes from './hooks/useRemoveShapes';
 import useZIndexShape from './hooks/useZIndexShape';
 import {
-  initialArrows,
-  initialCircles,
-  initialImages,
-  initialLines,
-  initialRectangles,
-  initialTexts,
-  initialBrushes,
-} from './models/InitialObjectsMock';
+  getSpecificStoredDataUtil,
+  saveStoredDataUtil,
+} from './utils/storedData.util';
+import { ShapeEnum } from './models/enums/Shape.enum';
 
 const WhiteBoard = () => {
   // DISABLE PULLDOWN TO REFRESH IN MOBILE
@@ -57,13 +53,28 @@ const WhiteBoard = () => {
   const [, updateState] = useState({});
   const forceUpdate = useCallback(() => updateState({}), []);
   // SHAPES
-  const [rectangles, setRectangles] = useState(initialRectangles);
-  const [circles, setCircles] = useState(initialCircles);
-  const [images, setImages] = useState(initialImages);
-  const [lines, setLines] = useState(initialLines);
-  const [arrows, setArrows] = useState(initialArrows);
-  const [texts, setTexts] = useState(initialTexts);
-  const [brushes, setBrushes] = useState(initialBrushes);
+  const [arrows, setArrows] = useState(
+    (getSpecificStoredDataUtil(ShapeEnum.ARROWS) as LineShapeModel[]) ?? []
+  );
+  const [circles, setCircles] = useState(
+    (getSpecificStoredDataUtil(ShapeEnum.CIRCLES) as GeneralShapeModel[]) ?? []
+  );
+  const [images, setImages] = useState(
+    (getSpecificStoredDataUtil(ShapeEnum.IMAGES) as ImageShapeModel[]) ?? []
+  );
+  const [lines, setLines] = useState(
+    (getSpecificStoredDataUtil(ShapeEnum.LINES) as LineShapeModel[]) ?? []
+  );
+  const [rectangles, setRectangles] = useState(
+    (getSpecificStoredDataUtil(ShapeEnum.RECTANGLES) as GeneralShapeModel[]) ??
+      []
+  );
+  const [texts, setTexts] = useState(
+    (getSpecificStoredDataUtil(ShapeEnum.TEXTS) as TextShapeModel[]) ?? []
+  );
+  const [brushes, setBrushes] = useState(
+    (getSpecificStoredDataUtil(ShapeEnum.BRUSHES) as LineShapeModel[]) ?? []
+  );
   const [selectShape, setSelectShape] = useState<string>(undefined);
   const stageRef = useRef<StageType>();
   const layerRef = useRef<LayerType>();
@@ -137,7 +148,17 @@ const WhiteBoard = () => {
         Default
       </button>
       <button
-        onClick={() => console.log(stageRef.current.toJSON(), rectangles)}
+        onClick={() => {
+          saveStoredDataUtil({
+            arrows,
+            circles,
+            images,
+            lines,
+            rectangles,
+            texts,
+            brushes,
+          });
+        }}
         type="button"
       >
         Save

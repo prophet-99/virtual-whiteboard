@@ -18,7 +18,7 @@ const ImageWB = ({
   const transformRef = useRef<TransformerType>();
   // CONTAINS IMAGE STATUS IN SECOND DESTRUCTURED PARAMETER
   const [image] = useImage(
-    (shapeProps as ImageShapeModel).imageURL,
+    (shapeProps as ImageShapeModel).imageURI,
     'anonymous'
   );
 

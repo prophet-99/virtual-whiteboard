@@ -96,6 +96,10 @@ const TextWB = ({
       // HIDE ON ENTER BUT DONT HIDE ON SHIFT + ENTER
       if (evt.keyCode === 13 && !evt.shiftKey) {
         shapeRef.current.text(textareaRef.value);
+        onChange({
+          ...shapeProps,
+          text: textareaRef.value,
+        });
         scopeRemoveTextarea();
       }
       // ON ESC DONT SET VALUE, BACK TO NODE
@@ -125,7 +129,6 @@ const TextWB = ({
         onTap={onSelect}
         onDblTap={editTextNode}
         ref={shapeRef}
-        text="Escriba aquí"
         {...shapeProps}
         draggable
         onDragEnd={(evt) =>

@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useRef } from 'react';
 
 import Konva from 'konva';
 import { KonvaEventObject } from 'konva/lib/Node';
+import { Line } from 'konva/lib/shapes/Line';
 import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
@@ -31,10 +32,26 @@ const useBrushWB = (
   let transformerRef: Transformer;
   let mode: 'default' | 'brush';
   let minimumSize: number;
-
-  useEffect(() => {
-    console.log('Brushes', brushes);
-  }, []);
+  const isFirstInitialization = useRef(true);
+  /**
+   * Add events to brush line when transform end or click
+   * @param brush Line reference to process
+   */
+  const handleAddEventsToBrush = (brush: Line) => {
+    // ADDED TRANSFORM REF TO LAST LINE
+    brush.on('click tap', ({ target }) => {
+      setSelectShape(target.id());
+      layer.add(transformerRef);
+      transformerRef.nodes([target]);
+      layer.draw();
+    });
+    brush.on('transformend', () => {
+      brush.setAttrs({
+        width: Math.max(minimumSize, brush.width() * brush.scaleX()),
+        height: Math.max(minimumSize, brush.height() * brush.scaleY()),
+      });
+    });
+  };
 
   const setConfigBrush = (brushConfig: BrushModel) => {
     stage = brushConfig.stage;
@@ -42,6 +59,22 @@ const useBrushWB = (
     transformerRef = brushConfig.transformerRef;
     mode = brushConfig.mode;
     minimumSize = brushConfig.minimumSize;
+    // DRAW BRUSHES ON FIRST INITIALIZATION
+    if (isFirstInitialization.current && brushConfig) {
+      brushes.forEach((brush) => {
+        const lineRef = new Konva.Line({
+          id: brush.id,
+          stroke: brush.stroke,
+          strokeWidth: brush.strokeWidth,
+          globalCompositeOperation: 'source-over',
+          points: brush.points,
+          draggable: true,
+        });
+        layer.add(lineRef);
+        handleAddEventsToBrush(lineRef);
+        isFirstInitialization.current = false;
+      });
+    }
   };
 
   const paintBrush = () => {
@@ -83,22 +116,7 @@ const useBrushWB = (
             strokeWidth: lastLine.strokeWidth(),
           },
         ]);
-        // ADDED TRANSFORM REF TO LAST LINE
-        lastLine.on('click tap', ({ target }) => {
-          setSelectShape(target.id());
-          layer.add(transformerRef);
-          transformerRef.nodes([target]);
-          layer.draw();
-        });
-        lastLine.on('transformend', () => {
-          lastLine.setAttrs({
-            width: Math.max(minimumSize, lastLine.width() * lastLine.scaleX()),
-            height: Math.max(
-              minimumSize,
-              lastLine.height() * lastLine.scaleY()
-            ),
-          });
-        });
+        handleAddEventsToBrush(lastLine);
       });
 
       stage.on('mousemove touchmove', () => {

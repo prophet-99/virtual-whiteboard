@@ -10,8 +10,13 @@ export interface GeneralShapeModel {
   fill: string;
 }
 
-export interface ImageShapeModel extends GeneralShapeModel {
-  imageURL: string;
+export interface ImageShapeModel {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  imageURI: string;
 }
 
 export interface LineShapeModel {
@@ -27,6 +32,7 @@ export interface TextShapeModel {
   y: number;
   fontSize: number;
   width: number;
+  text: string;
 }
 
 export interface ShapePropsModel {
@@ -46,4 +52,14 @@ export interface ShapePropsModel {
       | TextShapeModel
   ) => void;
   stage?: Stage;
+}
+
+export interface GroupShapeModel {
+  arrows: LineShapeModel[];
+  circles: GeneralShapeModel[];
+  images: ImageShapeModel[];
+  lines: LineShapeModel[];
+  rectangles: GeneralShapeModel[];
+  texts: TextShapeModel[];
+  brushes: LineShapeModel[];
 }
