@@ -7,7 +7,8 @@ import {
 /**
  * Custom hook to manage all shapes with their states
  * @param shapeList List of all shapes
- * @param shapeStateList List of all shape states
+ * @param shapeStateList List of all shape states (example of name states for arrows: "setArrows")
+ * Important: all states must be related to the Shape enum (Shape.enum.ts)
  * @returns Functions to handle the state of shapes
  */
 const useShape = (

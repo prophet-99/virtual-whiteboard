@@ -1,10 +1,10 @@
 import { ShapeEnum } from '../models/enums/Shape.enum';
-import { GroupShapeModel } from '../models/Shape.model';
+import { ShapeListModel } from '../models/ShapeState.model';
 
 export const getStoredDataUtil = () => {
   const parsedData = JSON.parse(
     window.sessionStorage.getItem('WHITEBOARD')
-  ) as GroupShapeModel;
+  ) as ShapeListModel;
 
   if (!parsedData) return undefined;
   return parsedData;
@@ -17,7 +17,7 @@ export const getSpecificStoredDataUtil = (shapeType: ShapeEnum) => {
   return storedData[shapeType];
 };
 
-export const saveStoredDataUtil = (shapes: GroupShapeModel) => {
+export const saveStoredDataUtil = (shapes: ShapeListModel) => {
   window.sessionStorage.setItem('WHITEBOARD', JSON.stringify(shapes));
 };
 

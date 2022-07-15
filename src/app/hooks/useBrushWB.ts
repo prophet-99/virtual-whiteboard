@@ -7,11 +7,11 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
-import * as uuid from 'uuid';
-
+import getRandomIdUtil from '../utils/getRandomId.util';
 import { BrushModel } from '../models/Brush.model';
 import { LineShapeModel } from '../models/Shape.model';
 import { ToolType } from '../models/types/Tool.type';
+import { ShapeEnum } from '../models/enums/Shape.enum';
 
 /**
  * Custom hook to free brush in canvas
@@ -119,7 +119,7 @@ const useBrushWB = (
         const position = stage.getPointerPosition();
 
         lastLine = new Konva.Line({
-          id: `brush~${uuid.v4()}`,
+          id: getRandomIdUtil(ShapeEnum.BRUSHES),
           stroke: 'purple',
           strokeWidth: 6,
           globalCompositeOperation: 'source-over',

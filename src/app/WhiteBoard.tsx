@@ -63,12 +63,7 @@ const WhiteBoard = () => {
   const stageRef = useRef<StageType>();
   const layerRef = useRef<LayerType>();
   // CUSTOM HOOK TO IMPROVE THE USE OF ALL SHAPES
-  const {
-    getAllShapeStates,
-    getAllShapes,
-    getSpecificShape,
-    getSpecificShapeState,
-  } = useShape(
+  const { getAllShapeStates, getAllShapes, getSpecificShapeState } = useShape(
     {
       arrows,
       circles,
@@ -121,6 +116,8 @@ const WhiteBoard = () => {
     });
     paintBrush();
   }, [paintBrush, setConfigBrush, tool]);
+  // TODO: CHECK THE ORDER WHEN IS LOADED
+  // TODO:
   // CUSTOM HOOK TO REMOVE THE SHAPES
   useRemoveShapes(
     getAllShapes(),
@@ -138,8 +135,6 @@ const WhiteBoard = () => {
       {/* INIT CONTROLS SECTION */}
       <WhiteBoardControls
         shapeList={getAllShapes()}
-        shapeStateList={getAllShapeStates()}
-        getSpecificShape={getSpecificShape}
         getSpecificShapeState={getSpecificShapeState}
         setTool={setTool}
         stageRef={stageRef.current}
