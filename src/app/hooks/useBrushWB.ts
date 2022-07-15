@@ -53,7 +53,6 @@ const useBrushWB = (
         width: newWidth,
         height: newHeight,
       });
-      // TODO: CHECK THIS
       // ADDED TO SHAPE STATE
       setBrush((prevState) => {
         const idx = prevState.findIndex(({ id }) => id === brush.id());
@@ -87,7 +86,7 @@ const useBrushWB = (
           globalCompositeOperation: 'source-over',
           points: brush.points,
           draggable: true,
-          // TODO: CHECK THIS
+          // NEW PROPERTIES ADDED TO SAVE
           rotation: brush.rotation,
           height: brush.height,
           scaleX: brush.scaleX,
@@ -98,8 +97,8 @@ const useBrushWB = (
         });
         layer.add(lineRef);
         handleAddEventsToBrush(lineRef);
-        isFirstInitialization.current = false;
       });
+      isFirstInitialization.current = false;
     }
   };
 
@@ -133,6 +132,7 @@ const useBrushWB = (
       stage.on('mouseup touchend', () => {
         isPaint = false;
         // ADDED TO SHAPE STATE
+        handleAddEventsToBrush(lastLine);
         setBrush((prevState) => [
           ...prevState,
           {
@@ -142,7 +142,6 @@ const useBrushWB = (
             strokeWidth: lastLine.strokeWidth(),
           },
         ]);
-        handleAddEventsToBrush(lastLine);
       });
 
       stage.on('mousemove touchmove', () => {

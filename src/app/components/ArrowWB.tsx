@@ -54,6 +54,11 @@ const ArrowWB = ({
             x: node.x(),
             y: node.y(),
             points: newPoints,
+            width: node.width(),
+            height: node.height(),
+            rotation: node.rotation(),
+            scaleX: node.scaleX(),
+            scaleY: node.scaleY(),
           });
         }}
       />
