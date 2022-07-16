@@ -3,7 +3,7 @@ import { ShapeListModel } from '../models/ShapeState.model';
 
 export const getStoredDataUtil = () => {
   const parsedData = JSON.parse(
-    window.sessionStorage.getItem('WHITEBOARD')
+    sessionStorage.getItem('WHITEBOARD')
   ) as ShapeListModel;
 
   if (!parsedData) return undefined;
@@ -18,9 +18,9 @@ export const getSpecificStoredDataUtil = (shapeType: ShapeEnum) => {
 };
 
 export const saveStoredDataUtil = (shapes: ShapeListModel) => {
-  window.sessionStorage.setItem('WHITEBOARD', JSON.stringify(shapes));
+  sessionStorage.setItem('WHITEBOARD', JSON.stringify(shapes));
 };
 
 export const deleteStoredDataUtil = () => {
-  window.sessionStorage.removeItem('WHITEBOARD');
+  sessionStorage.removeItem('WHITEBOARD');
 };

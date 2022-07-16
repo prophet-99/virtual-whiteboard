@@ -32,6 +32,7 @@ const useBrushWB = (
   let layer: Layer;
   let transformerRef: Transformer;
   let mode: ToolType;
+  let color: string;
   let minimumSize: number;
   const isFirstInitialization = useRef(true);
   /**
@@ -75,6 +76,7 @@ const useBrushWB = (
     layer = brushConfig.layer;
     transformerRef = brushConfig.transformerRef;
     mode = brushConfig.mode;
+    color = brushConfig.color;
     minimumSize = brushConfig.minimumSize;
     // DRAW BRUSHES ON FIRST INITIALIZATION
     if (isFirstInitialization.current && brushConfig) {
@@ -120,7 +122,7 @@ const useBrushWB = (
 
         lastLine = new Konva.Line({
           id: getRandomIdUtil(ShapeEnum.BRUSHES),
-          stroke: 'purple',
+          stroke: color,
           strokeWidth: 6,
           globalCompositeOperation: 'source-over',
           points: [position.x, position.y],

@@ -10,7 +10,7 @@ import { Layer as LayerType } from 'konva/lib/Layer';
  */
 const useZIndexShape = (selectShape: string, layerRef: LayerType) => {
   useEffect(() => {
-    // MOVE TO TOP THE SELECTED SHAOE
+    // MOVE TO TOP THE SELECTED SHAPE
     layerRef
       ?.findOne((shape: NodeConfig) => shape.getId() === selectShape)
       ?.moveToTop();

@@ -8,5 +8,6 @@ export interface BrushModel {
   layer: Layer;
   transformerRef: Transformer;
   mode: ToolType;
+  color: string;
   minimumSize: number;
 }

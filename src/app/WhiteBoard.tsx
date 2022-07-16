@@ -34,6 +34,7 @@ const WhiteBoard = () => {
   // GENERAL SETTINGS
   const MINIMUM_SIZE = 50;
   const [tool, setTool] = useState<ToolType>('DEFAULT');
+  const shapeColor = useRef('#0959AE');
   const [, updateState] = useState({});
   const forceUpdate = useCallback(() => updateState({}), []);
   // SHAPE STATES
@@ -112,12 +113,12 @@ const WhiteBoard = () => {
       layer: layerRef.current,
       transformerRef: transformer.current,
       mode: tool,
+      color: shapeColor.current,
       minimumSize: MINIMUM_SIZE,
     });
     paintBrush();
   }, [paintBrush, setConfigBrush, tool]);
   // TODO: CHECK THE ORDER WHEN IS LOADED
-  // TODO:
   // CUSTOM HOOK TO REMOVE THE SHAPES
   useRemoveShapes(
     getAllShapes(),
@@ -138,6 +139,9 @@ const WhiteBoard = () => {
         getSpecificShapeState={getSpecificShapeState}
         setTool={setTool}
         stageRef={stageRef.current}
+        onChangeColor={(color) => {
+          shapeColor.current = color;
+        }}
       />
       {/* END CONTROLS SECTION */}
       {/* INIT CANVAS SECTION */}
