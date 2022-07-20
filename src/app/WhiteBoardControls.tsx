@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import Compressor from 'compressorjs';
 
@@ -28,7 +28,6 @@ const WhiteBoardControls = ({
   layerRef,
   onChangeColor,
 }: WhiteBoardControlsPropsType) => {
-  const lastShapeList = useRef(shapeList);
   // CHECK IF SAVE WHEN EXIST ONE CHANGE
   useEffect(() => {
     // STORE IDS
@@ -40,10 +39,7 @@ const WhiteBoardControls = ({
       saveStoredIdsUtil(idList);
     }
     // STORE SHAPES
-    if (JSON.stringify(shapeList) !== JSON.stringify(lastShapeList.current)) {
-      saveStoredShapesUtil(shapeList);
-      lastShapeList.current = shapeList;
-    }
+    saveStoredShapesUtil(shapeList);
   }, [layerRef, shapeList]);
   // SAVE TO IMAGE
   const saveToImage = () => {

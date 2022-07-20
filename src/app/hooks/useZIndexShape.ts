@@ -26,7 +26,7 @@ const useZIndexShape = (selectShape: string, layerRef: LayerType) => {
   // SET Z INDEX IN FIRST INIT
   const renderZIndex = (layerScopeRef: LayerType) => {
     const idList = getStoredIdsUtil();
-    idList.forEach((id) =>
+    idList?.forEach((id) =>
       layerScopeRef
         .findOne((shape: NodeConfig) => shape.getId() === id)
         .moveToTop()
