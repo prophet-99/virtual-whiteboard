@@ -30,7 +30,6 @@ import useZIndexShape from './hooks/useZIndexShape';
 import WhiteBoardControls from './WhiteBoardControls';
 import useShape from './hooks/useShape';
 import usePulldownRefresh from './hooks/usePulldownRefresh';
-import { getSpecificStoredShapesUtil } from './utils/storedData.util';
 import { ShapeEnum } from './models/enums/Shape.enum';
 import { ToolType } from './models/types/Tool.type';
 
@@ -44,54 +43,16 @@ const WhiteBoard = () => {
   const [, updateState] = useState({});
   const forceUpdate = useCallback(() => updateState({}), []);
   // SHAPE STATES
-  const [arrows, setArrows] = useState(
-    (getSpecificStoredShapesUtil(ShapeEnum.ARROWS) as LineShapeModel[]) ?? []
-  );
-  const [circles, setCircles] = useState(
-    (getSpecificStoredShapesUtil(ShapeEnum.CIRCLES) as GeneralShapeModel[]) ??
-      []
-  );
-  const [images, setImages] = useState(
-    (getSpecificStoredShapesUtil(ShapeEnum.IMAGES) as ImageShapeModel[]) ?? []
-  );
-  const [lines, setLines] = useState(
-    (getSpecificStoredShapesUtil(ShapeEnum.LINES) as LineShapeModel[]) ?? []
-  );
-  const [rectangles, setRectangles] = useState(
-    (getSpecificStoredShapesUtil(
-      ShapeEnum.RECTANGLES
-    ) as GeneralShapeModel[]) ?? []
-  );
-  const [texts, setTexts] = useState(
-    (getSpecificStoredShapesUtil(ShapeEnum.TEXTS) as TextShapeModel[]) ?? []
-  );
-  const [brushes, setBrushes] = useState(
-    (getSpecificStoredShapesUtil(ShapeEnum.BRUSHES) as LineShapeModel[]) ?? []
-  );
   const [selectShape, setSelectShape] = useState<string>(undefined);
   const stageRef = useRef<StageType>();
   const layerRef = useRef<LayerType>();
   // CUSTOM HOOK TO IMPROVE THE USE OF ALL SHAPES
-  const { getAllShapeStates, getAllShapes, getSpecificShapeState } = useShape(
-    {
-      arrows,
-      circles,
-      images,
-      lines,
-      rectangles,
-      texts,
-      brushes,
-    },
-    {
-      setArrows,
-      setCircles,
-      setImages,
-      setLines,
-      setRectangles,
-      setTexts,
-      setBrushes,
-    }
-  );
+  const {
+    getAllShapeStates,
+    getAllShapes,
+    getSpecificShapeState,
+    getSpecificShape,
+  } = useShape();
   // INMUTABLE TRANSFORMER FOR BRUSH HOOK
   const transformer = useRef<TransformerType>(
     new Konva.Transformer({
@@ -104,8 +65,8 @@ const WhiteBoard = () => {
   );
   // BRUSH HOOK, SETUP AND USE
   const { paintBrush, setConfigBrush } = useBrushWB(
-    brushes,
-    setBrushes,
+    getSpecificShape(ShapeEnum.BRUSHES) as LineShapeModel[],
+    getSpecificShapeState(ShapeEnum.BRUSHES),
     ({ target }) => {
       if (target === target.getStage()) {
         transformer.current.nodes([]);
@@ -164,7 +125,7 @@ const WhiteBoard = () => {
         height={window.innerHeight}
       >
         <Layer ref={layerRef}>
-          {rectangles.map((rectangleRef) => (
+          {getSpecificShape(ShapeEnum.RECTANGLES).map((rectangleRef) => (
             <RectangleWB
               key={rectangleRef.id}
               minimumSize={MINIMUM_SIZE}
@@ -172,17 +133,17 @@ const WhiteBoard = () => {
               isSelected={rectangleRef.id === selectShape}
               onSelect={() => setSelectShape(rectangleRef.id)}
               onChange={(newAttrs) => {
-                const scopeRects = [...rectangles];
+                const scopeRects = [...getSpecificShape(ShapeEnum.RECTANGLES)];
                 const idx = scopeRects
                   .map(({ id }) => id)
                   .indexOf(rectangleRef.id);
                 scopeRects[idx] = newAttrs as GeneralShapeModel;
 
-                setRectangles(scopeRects);
+                getSpecificShapeState(ShapeEnum.RECTANGLES)(scopeRects); // setState(param)
               }}
             />
           ))}
-          {circles.map((circleRef) => (
+          {getSpecificShape(ShapeEnum.CIRCLES).map((circleRef) => (
             <CircleWB
               key={circleRef.id}
               minimumSize={MINIMUM_SIZE}
@@ -190,17 +151,17 @@ const WhiteBoard = () => {
               isSelected={circleRef.id === selectShape}
               onSelect={() => setSelectShape(circleRef.id)}
               onChange={(newAttrs) => {
-                const scopeCircles = [...circles];
+                const scopeCircles = [...getSpecificShape(ShapeEnum.CIRCLES)];
                 const idx = scopeCircles
                   .map(({ id }) => id)
                   .indexOf(circleRef.id);
                 scopeCircles[idx] = newAttrs as GeneralShapeModel;
 
-                setCircles(scopeCircles);
+                getSpecificShapeState(ShapeEnum.CIRCLES)(scopeCircles); // setState(param)
               }}
             />
           ))}
-          {images.map((imageRef) => (
+          {getSpecificShape(ShapeEnum.IMAGES).map((imageRef) => (
             <ImageWB
               key={imageRef.id}
               minimumSize={MINIMUM_SIZE}
@@ -208,17 +169,17 @@ const WhiteBoard = () => {
               isSelected={imageRef.id === selectShape}
               onSelect={() => setSelectShape(imageRef.id)}
               onChange={(newAttrs) => {
-                const scopeImages = [...images];
+                const scopeImages = [...getSpecificShape(ShapeEnum.IMAGES)];
                 const idx = scopeImages
                   .map(({ id }) => id)
                   .indexOf(imageRef.id);
                 scopeImages[idx] = newAttrs as ImageShapeModel;
 
-                setImages(scopeImages);
+                getSpecificShapeState(ShapeEnum.IMAGES)(scopeImages); // setState(param)
               }}
             />
           ))}
-          {lines.map((lineRef) => (
+          {getSpecificShape(ShapeEnum.LINES).map((lineRef) => (
             <LineWB
               key={lineRef.id}
               minimumSize={MINIMUM_SIZE}
@@ -226,15 +187,15 @@ const WhiteBoard = () => {
               isSelected={lineRef.id === selectShape}
               onSelect={() => setSelectShape(lineRef.id)}
               onChange={(newAttrs) => {
-                const scopeLines = [...lines];
+                const scopeLines = [...getSpecificShape(ShapeEnum.LINES)];
                 const idx = scopeLines.map(({ id }) => id).indexOf(lineRef.id);
                 scopeLines[idx] = newAttrs as LineShapeModel;
 
-                setLines(scopeLines);
+                getSpecificShapeState(ShapeEnum.LINES)(scopeLines); // setState(param)
               }}
             />
           ))}
-          {arrows.map((arrowRef) => (
+          {getSpecificShape(ShapeEnum.ARROWS).map((arrowRef) => (
             <ArrowWB
               key={arrowRef.id}
               minimumSize={MINIMUM_SIZE}
@@ -242,17 +203,17 @@ const WhiteBoard = () => {
               isSelected={arrowRef.id === selectShape}
               onSelect={() => setSelectShape(arrowRef.id)}
               onChange={(newAttrs) => {
-                const scopeArrows = [...arrows];
+                const scopeArrows = [...getSpecificShape(ShapeEnum.ARROWS)];
                 const idx = scopeArrows
                   .map(({ id }) => id)
                   .indexOf(arrowRef.id);
                 scopeArrows[idx] = newAttrs as LineShapeModel;
 
-                setArrows(scopeArrows);
+                getSpecificShapeState(ShapeEnum.ARROWS)(scopeArrows); // setState(param)
               }}
             />
           ))}
-          {texts.map((textRef) => (
+          {getSpecificShape(ShapeEnum.TEXTS).map((textRef) => (
             <TextWB
               key={textRef.id}
               minimumSize={MINIMUM_SIZE}
@@ -260,11 +221,16 @@ const WhiteBoard = () => {
               isSelected={textRef.id === selectShape}
               onSelect={() => setSelectShape(textRef.id)}
               onChange={(newAttrs) => {
-                const scopeTexts = [...texts];
+                const scopeTexts = [
+                  ...getSpecificShape(ShapeEnum.TEXTS),
+                ] as TextShapeModel[];
                 const idx = scopeTexts.map(({ id }) => id).indexOf(textRef.id);
                 scopeTexts[idx] = newAttrs as TextShapeModel;
 
-                setTexts(scopeTexts);
+                const setTexts = getSpecificShapeState(
+                  ShapeEnum.TEXTS
+                ) as React.Dispatch<React.SetStateAction<TextShapeModel[]>>;
+                setTexts(scopeTexts); // setState(param)
               }}
               stage={stageRef.current}
             />

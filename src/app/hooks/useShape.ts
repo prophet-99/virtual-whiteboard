@@ -1,8 +1,17 @@
+import { useState } from 'react';
+
 import { ShapeEnum } from '../models/enums/Shape.enum';
+import {
+  GeneralShapeModel,
+  ImageShapeModel,
+  LineShapeModel,
+  TextShapeModel,
+} from '../models/Shape.model';
 import {
   ShapeListModel,
   ShapeStateListModel,
 } from '../models/ShapeState.model';
+import { getSpecificStoredShapesUtil } from '../utils/storedData.util';
 
 /**
  * Custom hook to manage all shapes with their states
@@ -11,10 +20,51 @@ import {
  * Important: all states must be related to the Shape enum (Shape.enum.ts)
  * @returns Functions to handle the state of shapes
  */
-const useShape = (
-  shapeList: ShapeListModel,
-  shapeStateList: ShapeStateListModel
-) => {
+const useShape = () => {
+  // STATES OF ALL SHAPES
+  const [arrows, setArrows] = useState(
+    (getSpecificStoredShapesUtil(ShapeEnum.ARROWS) as LineShapeModel[]) ?? []
+  );
+  const [circles, setCircles] = useState(
+    (getSpecificStoredShapesUtil(ShapeEnum.CIRCLES) as GeneralShapeModel[]) ??
+      []
+  );
+  const [images, setImages] = useState(
+    (getSpecificStoredShapesUtil(ShapeEnum.IMAGES) as ImageShapeModel[]) ?? []
+  );
+  const [lines, setLines] = useState(
+    (getSpecificStoredShapesUtil(ShapeEnum.LINES) as LineShapeModel[]) ?? []
+  );
+  const [rectangles, setRectangles] = useState(
+    (getSpecificStoredShapesUtil(
+      ShapeEnum.RECTANGLES
+    ) as GeneralShapeModel[]) ?? []
+  );
+  const [texts, setTexts] = useState(
+    (getSpecificStoredShapesUtil(ShapeEnum.TEXTS) as TextShapeModel[]) ?? []
+  );
+  const [brushes, setBrushes] = useState(
+    (getSpecificStoredShapesUtil(ShapeEnum.BRUSHES) as LineShapeModel[]) ?? []
+  );
+  const shapeList: ShapeListModel = {
+    arrows,
+    circles,
+    images,
+    lines,
+    rectangles,
+    texts,
+    brushes,
+  };
+  const shapeStateList: ShapeStateListModel = {
+    setArrows,
+    setCircles,
+    setImages,
+    setLines,
+    setRectangles,
+    setTexts,
+    setBrushes,
+  };
+  // FUNCTIONS TO MANAGE THIS HOOK
   const getAllShapeStates = () => shapeStateList;
   const getAllShapes = () => shapeList;
   const getSpecificShapeState = (type: ShapeEnum) => {
