@@ -1,8 +1,9 @@
-.disable-pulldown-refresh-wb {
+// TO CONFIG APP
+.wb-disable-pulldown-refresh {
   overscroll-behavior-y: contain;
 }
 
-.config-textarea-wb {
+.wb-config-textarea {
   position: absolute;
   margin: 0;
   padding: 0;
@@ -11,4 +12,9 @@
   outline: none;
   background: none;
   resize: none;
+}
+
+// GENERAL STYLES
+.wb-container {
+  background: url('./assets/grid-canvas.svg');
 }

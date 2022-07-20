@@ -5,15 +5,15 @@ import { useLayoutEffect } from 'react';
  */
 const usePulldownRefresh = () => {
   useLayoutEffect(() => {
-    document.querySelector('html').classList.add('disable-pulldown-refresh-wb');
-    document.querySelector('body').classList.add('disable-pulldown-refresh-wb');
+    document.querySelector('html').classList.add('wb-disable-pulldown-refresh');
+    document.querySelector('body').classList.add('wb-disable-pulldown-refresh');
     return () => {
       document
         .querySelector('html')
-        .classList.remove('disable-pulldown-refresh-wb');
+        .classList.remove('wb-disable-pulldown-refresh');
       document
         .querySelector('body')
-        .classList.remove('disable-pulldown-refresh-wb');
+        .classList.remove('wb-disable-pulldown-refresh');
     };
   }, []);
 };

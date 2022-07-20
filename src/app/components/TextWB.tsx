@@ -40,7 +40,7 @@ const TextWB = ({
     document.body.appendChild(textareaRef);
     // TRYING TO MATCH THE TEXT ON THE CANVAS
     textareaRef.value = shapeRef.current.text();
-    textareaRef.classList.add('config-textarea-wb'); // CONFIG POSITION ABSOLUTE
+    textareaRef.classList.add('wb-config-textarea'); // CONFIG POSITION ABSOLUTE
     textareaRef.style.top = `${areaPosition.y}px`;
     textareaRef.style.left = `${areaPosition.x}px`;
     textareaRef.style.width = `${

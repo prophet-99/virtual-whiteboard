@@ -144,7 +144,7 @@ const WhiteBoard = () => {
   }, []);
 
   return (
-    <>
+    <main className="wb-container">
       {/* INIT CONTROLS SECTION */}
       <WhiteBoardControls
         shapeList={getAllShapes()}
@@ -272,7 +272,7 @@ const WhiteBoard = () => {
         </Layer>
       </Stage>
       {/* END CANVAS SECTION */}
-    </>
+    </main>
   );
 };
 

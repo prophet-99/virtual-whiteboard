@@ -12,6 +12,7 @@ import { getStoredIdsUtil } from '../utils/storedData.util';
  * @returns A function to render z-indez in first init
  */
 const useZIndexShape = (selectShape: string, layerRef: LayerType) => {
+  // TODO: IN FUTURE ONE EVENT CAN ACTIVE THE SHAPE
   useEffect(() => {
     // MOVE TO TOP THE SELECTED SHAPE
     layerRef
