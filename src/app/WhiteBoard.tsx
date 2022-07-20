@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import Konva from 'konva';
 import { Stage as StageType } from 'konva/lib/Stage';
@@ -24,7 +30,7 @@ import useZIndexShape from './hooks/useZIndexShape';
 import WhiteBoardControls from './WhiteBoardControls';
 import useShape from './hooks/useShape';
 import usePulldownRefresh from './hooks/usePulldownRefresh';
-import { getSpecificStoredDataUtil } from './utils/storedData.util';
+import { getSpecificStoredShapesUtil } from './utils/storedData.util';
 import { ShapeEnum } from './models/enums/Shape.enum';
 import { ToolType } from './models/types/Tool.type';
 
@@ -39,26 +45,28 @@ const WhiteBoard = () => {
   const forceUpdate = useCallback(() => updateState({}), []);
   // SHAPE STATES
   const [arrows, setArrows] = useState(
-    (getSpecificStoredDataUtil(ShapeEnum.ARROWS) as LineShapeModel[]) ?? []
+    (getSpecificStoredShapesUtil(ShapeEnum.ARROWS) as LineShapeModel[]) ?? []
   );
   const [circles, setCircles] = useState(
-    (getSpecificStoredDataUtil(ShapeEnum.CIRCLES) as GeneralShapeModel[]) ?? []
-  );
-  const [images, setImages] = useState(
-    (getSpecificStoredDataUtil(ShapeEnum.IMAGES) as ImageShapeModel[]) ?? []
-  );
-  const [lines, setLines] = useState(
-    (getSpecificStoredDataUtil(ShapeEnum.LINES) as LineShapeModel[]) ?? []
-  );
-  const [rectangles, setRectangles] = useState(
-    (getSpecificStoredDataUtil(ShapeEnum.RECTANGLES) as GeneralShapeModel[]) ??
+    (getSpecificStoredShapesUtil(ShapeEnum.CIRCLES) as GeneralShapeModel[]) ??
       []
   );
+  const [images, setImages] = useState(
+    (getSpecificStoredShapesUtil(ShapeEnum.IMAGES) as ImageShapeModel[]) ?? []
+  );
+  const [lines, setLines] = useState(
+    (getSpecificStoredShapesUtil(ShapeEnum.LINES) as LineShapeModel[]) ?? []
+  );
+  const [rectangles, setRectangles] = useState(
+    (getSpecificStoredShapesUtil(
+      ShapeEnum.RECTANGLES
+    ) as GeneralShapeModel[]) ?? []
+  );
   const [texts, setTexts] = useState(
-    (getSpecificStoredDataUtil(ShapeEnum.TEXTS) as TextShapeModel[]) ?? []
+    (getSpecificStoredShapesUtil(ShapeEnum.TEXTS) as TextShapeModel[]) ?? []
   );
   const [brushes, setBrushes] = useState(
-    (getSpecificStoredDataUtil(ShapeEnum.BRUSHES) as LineShapeModel[]) ?? []
+    (getSpecificStoredShapesUtil(ShapeEnum.BRUSHES) as LineShapeModel[]) ?? []
   );
   const [selectShape, setSelectShape] = useState<string>(undefined);
   const stageRef = useRef<StageType>();
@@ -118,7 +126,6 @@ const WhiteBoard = () => {
     });
     paintBrush();
   }, [paintBrush, setConfigBrush, tool]);
-  // TODO: CHECK THE ORDER WHEN IS LOADED
   // CUSTOM HOOK TO REMOVE THE SHAPES
   useRemoveShapes(
     getAllShapes(),
@@ -129,7 +136,12 @@ const WhiteBoard = () => {
     layerRef.current
   );
   // CUSTOM HOOK TO CHANGE THE z-index OF THE SHAPES
-  useZIndexShape(selectShape, layerRef.current);
+  const { renderZIndex } = useZIndexShape(selectShape, layerRef.current);
+  // CHECK THE z-index WHEN IS LOADED
+  useLayoutEffect(() => {
+    setTimeout(() => renderZIndex(layerRef.current), 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -139,6 +151,7 @@ const WhiteBoard = () => {
         getSpecificShapeState={getSpecificShapeState}
         setTool={setTool}
         stageRef={stageRef.current}
+        layerRef={layerRef.current}
         onChangeColor={(color) => {
           shapeColor.current = color;
         }}

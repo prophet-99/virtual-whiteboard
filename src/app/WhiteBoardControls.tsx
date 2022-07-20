@@ -3,6 +3,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Compressor from 'compressorjs';
 
 import { Stage as StageType } from 'konva/lib/Stage';
+import { Layer as LayerType } from 'konva/lib/Layer';
 
 import { ShapeEnum } from './models/enums/Shape.enum';
 import {
@@ -13,7 +14,10 @@ import {
 } from './models/Shape.model';
 import { ShapeListModel } from './models/ShapeState.model';
 import { ToolType } from './models/types/Tool.type';
-import { saveStoredDataUtil } from './utils/storedData.util';
+import {
+  saveStoredIdsUtil,
+  saveStoredShapesUtil,
+} from './utils/storedData.util';
 import getRandomIdUtil from './utils/getRandomId.util';
 
 const WhiteBoardControls = ({
@@ -21,16 +25,26 @@ const WhiteBoardControls = ({
   getSpecificShapeState,
   setTool,
   stageRef,
+  layerRef,
   onChangeColor,
 }: WhiteBoardControlsPropsType) => {
   const lastShapeList = useRef(shapeList);
   // CHECK IF SAVE WHEN EXIST ONE CHANGE
   useEffect(() => {
+    // STORE IDS
+    if (layerRef) {
+      const idList = layerRef
+        .getChildren()
+        .map((shape) => (shape ? shape.id() : undefined))
+        .filter((idRef) => idRef.length > 0);
+      saveStoredIdsUtil(idList);
+    }
+    // STORE SHAPES
     if (JSON.stringify(shapeList) !== JSON.stringify(lastShapeList.current)) {
-      saveStoredDataUtil(shapeList);
+      saveStoredShapesUtil(shapeList);
       lastShapeList.current = shapeList;
     }
-  }, [shapeList]);
+  }, [layerRef, shapeList]);
   // SAVE TO IMAGE
   const saveToImage = () => {
     const link = document.createElement('a');
@@ -214,6 +228,7 @@ type WhiteBoardControlsPropsType = {
   getSpecificShapeState: (type: ShapeEnum) => any;
   setTool: React.Dispatch<React.SetStateAction<ToolType>>;
   stageRef: StageType;
+  layerRef: LayerType;
   onChangeColor: (color: string) => void;
 };
 export default WhiteBoardControls;

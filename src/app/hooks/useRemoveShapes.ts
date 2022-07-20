@@ -7,7 +7,7 @@ import {
   ShapeListModel,
   ShapeStateListModel,
 } from '../models/ShapeState.model';
-import { saveStoredDataUtil } from '../utils/storedData.util';
+import { saveStoredShapesUtil } from '../utils/storedData.util';
 
 /**
  * Custom hook to delete shapes
@@ -46,7 +46,7 @@ const useRemoveShapes = (
           arrows.splice(selectedIdx, 1);
           setArrows(arrows);
           // MANUALLY DELETE BECAUSE EXISTS forceUpdate()
-          saveStoredDataUtil(shapeList);
+          saveStoredShapesUtil(shapeList);
           forceUpdate();
           return;
         }
@@ -55,7 +55,7 @@ const useRemoveShapes = (
           circles.splice(selectedIdx, 1);
           setCircles(circles);
           // MANUALLY DELETE BECAUSE EXISTS forceUpdate()
-          saveStoredDataUtil(shapeList);
+          saveStoredShapesUtil(shapeList);
           forceUpdate();
           return;
         }
@@ -64,7 +64,7 @@ const useRemoveShapes = (
           images.splice(selectedIdx, 1);
           setImages(images);
           // MANUALLY DELETE BECAUSE EXISTS forceUpdate()
-          saveStoredDataUtil(shapeList);
+          saveStoredShapesUtil(shapeList);
           forceUpdate();
           return;
         }
@@ -73,7 +73,7 @@ const useRemoveShapes = (
           lines.splice(selectedIdx, 1);
           setLines(lines);
           // MANUALLY DELETE BECAUSE EXISTS forceUpdate()
-          saveStoredDataUtil(shapeList);
+          saveStoredShapesUtil(shapeList);
           forceUpdate();
           return;
         }
@@ -82,7 +82,7 @@ const useRemoveShapes = (
           rectangles.splice(selectedIdx, 1);
           setRectangles(rectangles);
           // MANUALLY DELETE BECAUSE EXISTS forceUpdate()
-          saveStoredDataUtil(shapeList);
+          saveStoredShapesUtil(shapeList);
           forceUpdate();
           return;
         }
@@ -91,7 +91,7 @@ const useRemoveShapes = (
           texts.splice(selectedIdx, 1);
           setTexts(texts);
           // MANUALLY DELETE BECAUSE EXISTS forceUpdate()
-          saveStoredDataUtil(shapeList);
+          saveStoredShapesUtil(shapeList);
           forceUpdate();
           return;
         }
@@ -104,7 +104,7 @@ const useRemoveShapes = (
           brushes.splice(selectedIdx, 1);
           setBrushes(brushes);
           // MANUALLY DELETE BECAUSE EXISTS forceUpdate()
-          saveStoredDataUtil(shapeList);
+          saveStoredShapesUtil(shapeList);
           forceUpdate();
         }
       }
