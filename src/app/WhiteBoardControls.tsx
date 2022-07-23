@@ -19,11 +19,13 @@ import {
   saveStoredShapesUtil,
 } from './utils/storedData.util';
 import getRandomIdUtil from './utils/getRandomId.util';
+import useZIndexShape from './hooks/useZIndexShape';
 
 const WhiteBoardControls = ({
   shapeList,
   getSpecificShapeState,
   setTool,
+  currentShapeId,
   stageRef,
   layerRef,
   onChangeColor,
@@ -177,14 +179,25 @@ const WhiteBoardControls = ({
       },
     ]);
   };
+  // FUNCTIONS TO MANAGE z-index
+  const { bringForward, bringToFront, sendBackward, sendToBack } =
+    useZIndexShape(currentShapeId, layerRef);
 
   return (
-    <>
-      <button onClick={() => setTool('BRUSH')} type="button">
-        Brush me
+    <section className="wb-controls">
+      <button
+        className="wb-controls__item"
+        onClick={() => setTool('DEFAULT')}
+        type="button"
+      >
+        <i className="fa-solid fa-arrow-pointer" />
       </button>
-      <button onClick={() => setTool('DEFAULT')} type="button">
-        Default
+      <button
+        className="wb-controls__item"
+        onClick={() => setTool('BRUSH')}
+        type="button"
+      >
+        <i className="fa-solid fa-pen" />
       </button>
       <button onClick={saveToImage} type="button">
         Save to Image
@@ -214,7 +227,19 @@ const WhiteBoardControls = ({
         value={color}
         onChange={(evt) => setColor(evt.target.value)}
       />
-    </>
+      <button type="button" onClick={bringForward}>
+        Bring forward
+      </button>
+      <button type="button" onClick={bringToFront}>
+        Bring to front
+      </button>
+      <button type="button" onClick={sendBackward}>
+        Send backward
+      </button>
+      <button type="button" onClick={sendToBack}>
+        Send to back
+      </button>
+    </section>
   );
 };
 
@@ -223,6 +248,7 @@ type WhiteBoardControlsPropsType = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getSpecificShapeState: (type: ShapeEnum) => any;
   setTool: React.Dispatch<React.SetStateAction<ToolType>>;
+  currentShapeId: string;
   stageRef: StageType;
   layerRef: LayerType;
   onChangeColor: (color: string) => void;

@@ -113,6 +113,12 @@ const useBrushWB = (
 
     // ACTIVE EVENTS ONLY IF mode IS DIFFERENT FROM default
     if (mode !== 'DEFAULT') {
+      // DISABLE DRAGGABLE EVENT IN ALL SHAPES AND HIDE TRANSFORMER IF EXISTS
+      layer.children.forEach((child) => child.setDraggable(false));
+      layer.children.forEach((child) => {
+        if (child.id() === '') child.hide();
+      });
+      // PROCESS TO ADD NEW LINE
       let isPaint = false;
       let lastLine: Konva.Line;
 
@@ -152,6 +158,12 @@ const useBrushWB = (
         const newPoints = lastLine.points().concat([position.x, position.y]);
         lastLine.points(newPoints);
         layer.batchDraw();
+      });
+    } else {
+      // ENABLE DRAGGABLE EVENT IN ALL SHAPES AND SHOW TRANSFORMER IF EXISTS
+      layer.children.forEach((child) => child.setDraggable(true));
+      layer.children.forEach((child) => {
+        if (child.id() === '') child.show();
       });
     }
     stage.on('click tap', (evt) => deselectAnyNode(evt));

@@ -39,7 +39,7 @@ const WhiteBoard = () => {
   // GENERAL SETTINGS
   const MINIMUM_SIZE = 50;
   const [tool, setTool] = useState<ToolType>('DEFAULT');
-  const shapeColor = useRef('#0959AE');
+  const [shapeColor, setShapeColor] = useState<string>('#0959AE');
   const [, updateState] = useState({});
   const forceUpdate = useCallback(() => updateState({}), []);
   // SHAPE STATES
@@ -82,11 +82,11 @@ const WhiteBoard = () => {
       layer: layerRef.current,
       transformerRef: transformer.current,
       mode: tool,
-      color: shapeColor.current,
+      color: shapeColor,
       minimumSize: MINIMUM_SIZE,
     });
     paintBrush();
-  }, [paintBrush, setConfigBrush, tool]);
+  }, [paintBrush, setConfigBrush, tool, shapeColor]);
   // CUSTOM HOOK TO REMOVE THE SHAPES
   useRemoveShapes(
     getAllShapes(),
@@ -97,10 +97,10 @@ const WhiteBoard = () => {
     layerRef.current
   );
   // CUSTOM HOOK TO CHANGE THE z-index OF THE SHAPES
-  const { renderZIndex } = useZIndexShape(selectShape, layerRef.current);
+  const { initializeZIndex } = useZIndexShape(selectShape, layerRef.current);
   // CHECK THE z-index WHEN IS LOADED
   useLayoutEffect(() => {
-    setTimeout(() => renderZIndex(layerRef.current), 0);
+    setTimeout(() => initializeZIndex(layerRef.current), 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -111,11 +111,10 @@ const WhiteBoard = () => {
         shapeList={getAllShapes()}
         getSpecificShapeState={getSpecificShapeState}
         setTool={setTool}
+        currentShapeId={selectShape}
         stageRef={stageRef.current}
         layerRef={layerRef.current}
-        onChangeColor={(color) => {
-          shapeColor.current = color;
-        }}
+        onChangeColor={(color) => setShapeColor(color)}
       />
       {/* END CONTROLS SECTION */}
       {/* INIT CANVAS SECTION */}
@@ -133,13 +132,18 @@ const WhiteBoard = () => {
               isSelected={rectangleRef.id === selectShape}
               onSelect={() => setSelectShape(rectangleRef.id)}
               onChange={(newAttrs) => {
-                const scopeRects = [...getSpecificShape(ShapeEnum.RECTANGLES)];
+                const scopeRects = [
+                  ...getSpecificShape(ShapeEnum.RECTANGLES),
+                ] as GeneralShapeModel[];
                 const idx = scopeRects
                   .map(({ id }) => id)
                   .indexOf(rectangleRef.id);
                 scopeRects[idx] = newAttrs as GeneralShapeModel;
 
-                getSpecificShapeState(ShapeEnum.RECTANGLES)(scopeRects); // setState(param)
+                const setRectangles = getSpecificShapeState(
+                  ShapeEnum.RECTANGLES
+                ) as React.Dispatch<React.SetStateAction<GeneralShapeModel[]>>;
+                setRectangles(scopeRects); // setState(param)
               }}
             />
           ))}
@@ -151,13 +155,18 @@ const WhiteBoard = () => {
               isSelected={circleRef.id === selectShape}
               onSelect={() => setSelectShape(circleRef.id)}
               onChange={(newAttrs) => {
-                const scopeCircles = [...getSpecificShape(ShapeEnum.CIRCLES)];
+                const scopeCircles = [
+                  ...getSpecificShape(ShapeEnum.CIRCLES),
+                ] as GeneralShapeModel[];
                 const idx = scopeCircles
                   .map(({ id }) => id)
                   .indexOf(circleRef.id);
                 scopeCircles[idx] = newAttrs as GeneralShapeModel;
 
-                getSpecificShapeState(ShapeEnum.CIRCLES)(scopeCircles); // setState(param)
+                const setCircles = getSpecificShapeState(
+                  ShapeEnum.CIRCLES
+                ) as React.Dispatch<React.SetStateAction<GeneralShapeModel[]>>;
+                setCircles(scopeCircles); // setState(param)
               }}
             />
           ))}
@@ -169,13 +178,18 @@ const WhiteBoard = () => {
               isSelected={imageRef.id === selectShape}
               onSelect={() => setSelectShape(imageRef.id)}
               onChange={(newAttrs) => {
-                const scopeImages = [...getSpecificShape(ShapeEnum.IMAGES)];
+                const scopeImages = [
+                  ...getSpecificShape(ShapeEnum.IMAGES),
+                ] as ImageShapeModel[];
                 const idx = scopeImages
                   .map(({ id }) => id)
                   .indexOf(imageRef.id);
                 scopeImages[idx] = newAttrs as ImageShapeModel;
 
-                getSpecificShapeState(ShapeEnum.IMAGES)(scopeImages); // setState(param)
+                const setImages = getSpecificShapeState(
+                  ShapeEnum.IMAGES
+                ) as React.Dispatch<React.SetStateAction<ImageShapeModel[]>>;
+                setImages(scopeImages); // setState(param)
               }}
             />
           ))}
@@ -187,11 +201,16 @@ const WhiteBoard = () => {
               isSelected={lineRef.id === selectShape}
               onSelect={() => setSelectShape(lineRef.id)}
               onChange={(newAttrs) => {
-                const scopeLines = [...getSpecificShape(ShapeEnum.LINES)];
+                const scopeLines = [
+                  ...getSpecificShape(ShapeEnum.LINES),
+                ] as LineShapeModel[];
                 const idx = scopeLines.map(({ id }) => id).indexOf(lineRef.id);
                 scopeLines[idx] = newAttrs as LineShapeModel;
 
-                getSpecificShapeState(ShapeEnum.LINES)(scopeLines); // setState(param)
+                const setLines = getSpecificShapeState(
+                  ShapeEnum.LINES
+                ) as React.Dispatch<React.SetStateAction<LineShapeModel[]>>;
+                setLines(scopeLines); // setState(param)
               }}
             />
           ))}
@@ -203,13 +222,18 @@ const WhiteBoard = () => {
               isSelected={arrowRef.id === selectShape}
               onSelect={() => setSelectShape(arrowRef.id)}
               onChange={(newAttrs) => {
-                const scopeArrows = [...getSpecificShape(ShapeEnum.ARROWS)];
+                const scopeArrows = [
+                  ...getSpecificShape(ShapeEnum.ARROWS),
+                ] as LineShapeModel[];
                 const idx = scopeArrows
                   .map(({ id }) => id)
                   .indexOf(arrowRef.id);
                 scopeArrows[idx] = newAttrs as LineShapeModel;
 
-                getSpecificShapeState(ShapeEnum.ARROWS)(scopeArrows); // setState(param)
+                const setArrows = getSpecificShapeState(
+                  ShapeEnum.ARROWS
+                ) as React.Dispatch<React.SetStateAction<LineShapeModel[]>>;
+                setArrows(scopeArrows); // setState(param)
               }}
             />
           ))}
