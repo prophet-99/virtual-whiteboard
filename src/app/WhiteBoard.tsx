@@ -18,6 +18,8 @@ import {
   LineShapeModel,
   TextShapeModel,
 } from './models/Shape.model';
+import WhiteBoardControls from './WhiteBoardControls';
+import WhiteboardShapeConfig from './WhiteboardShapeConfig';
 import RectangleWB from './components/RectangleWB';
 import CircleWB from './components/CircleWB';
 import ImageWB from './components/ImageWB';
@@ -27,7 +29,6 @@ import TextWB from './components/TextWB';
 import useBrushWB from './hooks/useBrushWB';
 import useRemoveShapes from './hooks/useRemoveShapes';
 import useZIndexShape from './hooks/useZIndexShape';
-import WhiteBoardControls from './WhiteBoardControls';
 import useShape from './hooks/useShape';
 import usePulldownRefresh from './hooks/usePulldownRefresh';
 import { ShapeEnum } from './models/enums/Shape.enum';
@@ -106,12 +107,21 @@ const WhiteBoard = () => {
 
   return (
     <main className="wb-container">
+      {/* INIT SHAPE CONTROLS SECTION */}
+      <WhiteboardShapeConfig
+        shapeList={getAllShapes()}
+        getSpecificShapeState={getSpecificShapeState}
+        currentShapeId={selectShape}
+        stageRef={stageRef.current}
+        layerRef={layerRef.current}
+      />
+      {/* END SHAPE CONTROLS SECTION */}
       {/* INIT CONTROLS SECTION */}
       <WhiteBoardControls
         shapeList={getAllShapes()}
         getSpecificShapeState={getSpecificShapeState}
+        tool={tool}
         setTool={setTool}
-        currentShapeId={selectShape}
         stageRef={stageRef.current}
         layerRef={layerRef.current}
         onChangeColor={(color) => setShapeColor(color)}

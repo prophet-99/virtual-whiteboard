@@ -19,13 +19,12 @@ import {
   saveStoredShapesUtil,
 } from './utils/storedData.util';
 import getRandomIdUtil from './utils/getRandomId.util';
-import useZIndexShape from './hooks/useZIndexShape';
 
 const WhiteBoardControls = ({
   shapeList,
   getSpecificShapeState,
+  tool,
   setTool,
-  currentShapeId,
   stageRef,
   layerRef,
   onChangeColor,
@@ -54,7 +53,7 @@ const WhiteBoardControls = ({
     document.body.removeChild(link);
   };
   // STATE OF COLOR
-  const [color, setColor] = useState('#0959AE');
+  const [color, setColor] = useState('#2D2E2F');
   useEffect(() => {
     onChangeColor(color);
   }, [color, onChangeColor]);
@@ -179,65 +178,72 @@ const WhiteBoardControls = ({
       },
     ]);
   };
-  // FUNCTIONS TO MANAGE z-index
-  const { bringForward, bringToFront, sendBackward, sendToBack } =
-    useZIndexShape(currentShapeId, layerRef);
 
   return (
     <section className="wb-controls">
       <button
-        className="wb-controls__item"
+        className={`wb-controls__item ${tool === 'DEFAULT' ? 'is-active' : ''}`}
         onClick={() => setTool('DEFAULT')}
         type="button"
       >
         <i className="fa-solid fa-arrow-pointer" />
       </button>
       <button
-        className="wb-controls__item"
+        className={`wb-controls__item ${tool === 'BRUSH' ? 'is-active' : ''}`}
         onClick={() => setTool('BRUSH')}
         type="button"
       >
         <i className="fa-solid fa-pen" />
       </button>
-      <button onClick={saveToImage} type="button">
-        Save to Image
+      <button
+        className="wb-controls__item wb-controls__item--rotate-45"
+        onClick={createArrow}
+        type="button"
+      >
+        <i className="fa-solid fa-down-long" />
       </button>
-      <button onClick={createArrow} type="button">
-        Add arrow
+      <button
+        className="wb-controls__item"
+        onClick={createCircle}
+        type="button"
+      >
+        <i className="fa-regular fa-circle" />
       </button>
-      <button onClick={createCircle} type="button">
-        Add circle
+      <button
+        className="wb-controls__item wb-controls__item--rotate-135"
+        onClick={createLine}
+        type="button"
+      >
+        <i className="fa-solid fa-minus" />
       </button>
-      <button onClick={createLine} type="button">
-        Add line
+      <button
+        className="wb-controls__item"
+        onClick={createRectangle}
+        type="button"
+      >
+        <i className="fa-regular fa-square" />
       </button>
-      <button onClick={createRectangle} type="button">
-        Add rectangle
+      <button className="wb-controls__item" onClick={createText} type="button">
+        <i className="fa-solid fa-t" />
       </button>
-      <button onClick={createText} type="button">
-        Add text
-      </button>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(evt) => createImage(evt)}
-      />
-      <input
-        type="color"
-        value={color}
-        onChange={(evt) => setColor(evt.target.value)}
-      />
-      <button type="button" onClick={bringForward}>
-        Bring forward
-      </button>
-      <button type="button" onClick={bringToFront}>
-        Bring to front
-      </button>
-      <button type="button" onClick={sendBackward}>
-        Send backward
-      </button>
-      <button type="button" onClick={sendToBack}>
-        Send to back
+      <label className="wb-controls__item wb-controls__item--input">
+        <i className="fa-regular fa-image" />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(evt) => createImage(evt)}
+        />
+      </label>
+      <label className="wb-controls__item wb-controls__item--input">
+        <i className="wb-controls__color-pck" style={{ background: color }} />
+        <input
+          type="color"
+          value={color}
+          onChange={(evt) => setColor(evt.target.value)}
+        />
+      </label>
+      <button className="wb-controls__item" onClick={saveToImage} type="button">
+        <i className="fa-solid fa-download" />
       </button>
     </section>
   );
@@ -247,8 +253,8 @@ type WhiteBoardControlsPropsType = {
   shapeList: ShapeListModel;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getSpecificShapeState: (type: ShapeEnum) => any;
+  tool: string;
   setTool: React.Dispatch<React.SetStateAction<ToolType>>;
-  currentShapeId: string;
   stageRef: StageType;
   layerRef: LayerType;
   onChangeColor: (color: string) => void;
