@@ -129,7 +129,7 @@ const useBrushWB = (
         lastLine = new Konva.Line({
           id: getRandomIdUtil(ShapeEnum.BRUSHES),
           stroke: color,
-          strokeWidth: 6,
+          strokeWidth: 2,
           globalCompositeOperation: 'source-over',
           points: [position.x, position.y],
           draggable: true,
