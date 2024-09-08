@@ -15,7 +15,7 @@ const addBrushWB = (
   stage.off('click tap');
 
   // ACTIVE EVENTS ONLY IF mode IS DIFFERENT FROM default
-  if (mode !== 'default') {
+  if (mode !== 'DEFAULT') {
     let isPaint = false;
     let lastLine: Konva.Line;
 
@@ -27,10 +27,10 @@ const addBrushWB = (
 
       lastLine = new Konva.Line({
         id: localId,
-        stroke: mode === 'brush' ? 'purple' : 'white',
-        strokeWidth: mode === 'brush' ? 5 : 20,
+        stroke: mode === 'BRUSH' ? 'purple' : 'white',
+        strokeWidth: mode === 'BRUSH' ? 5 : 20,
         globalCompositeOperation:
-          mode === 'brush' ? 'source-over' : 'destination-out',
+          mode === 'BRUSH' ? 'source-over' : 'destination-out',
         points: [position.x, position.y],
         draggable: true,
       });
