@@ -1,1 +1,1 @@
-export type ToolType = 'BRUSH' | 'DEFAULT';
+export type ToolType = 'brush' | 'default';
